@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package proto_messages;
+
+message Ball
+{
+  uint32 position_x = 1;
+  uint32 position_y = 2;
+}
+
+message GameState
+{
+  string state         = 1;
+  uint32 clients_ready = 2;
+}
+
+message Paddle
+{
+  uint32 position = 1;
+}
+
+message Score
+{
+  uint32 left  = 1;
+  uint32 right = 2;
+}
+
+message PongGameData
+{
+  Ball ball = 1;
+  GameState game_state = 2;
+  Paddle paddle_left = 3;
+  Paddle paddle_right = 4;
+  Score score = 5;
+}
