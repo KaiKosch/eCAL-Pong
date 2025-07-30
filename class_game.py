@@ -15,7 +15,7 @@ def subscriber_event_callback(subscriber_id : ecal_core.TopicId, callback_data :
 class Game:
 
     def __init__(self, id):
-        # Gamestate parameters
+        # gamestate parameters
         self.game_id = id
         self.left_paddle_pos = 250
         self.right_paddle_pos = 250

@@ -5,7 +5,7 @@ import pygame
 import proto_messages.pong_game_data_pb2 as pong_game_data_pb2
 import ecal.nanobind_core as ecal_core
 
-# Gamestate parameters
+# gamestate parameters
 clients_ready = 0
 left_paddle_pos = 250
 right_paddle_pos = 250
@@ -18,15 +18,17 @@ playername_1 = "Player_1"
 playername_2 = "Player_2"
 all_players_connected = False
 
-# Colours
+# colours
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-# Screen
-WIDTH, HEIGHT = 800, 600
+# screen
+WIDTH = 800
+HEIGHT = 600
 
-# Paddles
-paddle_width, paddle_height = 10, 100
+# paddles
+paddle_width = 10
+paddle_height = 100
 paddle_speed = 6
 
 # callbacks

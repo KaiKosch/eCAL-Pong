@@ -13,11 +13,13 @@ clients_ready = 0
 player_names = []
 games = []
 
-# Screen
-WIDTH, HEIGHT = 800, 600
+# screen
+WIDTH = 800
+HEIGHT = 800
 
-# Paddles
-paddle_width, paddle_height = 10, 100
+# paddles
+paddle_width = 10
+paddle_height = 100
 
 # callbacks
 def subscriber_event_callback(subscriber_id : ecal_core.TopicId, callback_data : ecal_core.PubEventCallbackData):
@@ -25,38 +27,32 @@ def subscriber_event_callback(subscriber_id : ecal_core.TopicId, callback_data :
     entity = subscriber_id.topic_id
     print("A subscriber with id {} from host {} with PID {} has been {}".format(entity.entity_id, entity.host_name, entity.process_id, callback_data.event_type))
 
-def connection_request_callback(method_information : ecal_core.ServiceMethodInformation, request : bytes) -> Tuple[int, bytes]:
-    global clients_ready, player_names
+def connection_request_callback(method_information: ecal_core.ServiceMethodInformation, request: bytes) -> Tuple[int, bytes]:
+    global clients_ready, player_names, games
+
+    player_name = request.decode()
+    player_names.append(player_name)
     clients_ready += 1
 
-    if clients_ready <= 6:
-        player_names.append(request.decode())
-        if clients_ready == 1 or clients_ready == 2:
-            game_id = 0
-        elif clients_ready == 3 or clients_ready == 4:
-            game_id = 1
-        elif clients_ready == 5 or clients_ready == 6:
-            game_id = 2
-        return 0, bytes(str(game_id), "utf-8")
-    else:
-        print("Alle Spiele sind voll.")
-        return 0, bytes("-", "utf-8")
-    
+    # calculate game id
+    game_id = (clients_ready - 1) // 2
+
+    # create game on demand
+    if len(games) <= game_id:
+        new_game = Game(game_id)
+        games.append(new_game)
+        print(f"Neues Spiel mit ID {game_id} erzeugt.")
+
+    print(f"{player_name} wurde Spiel {game_id} zugewiesen.")
+    return 0, bytes(str(game_id), "utf-8")
+
 def left_name_callback(method_information : ecal_core.ServiceMethodInformation, request : bytes) -> Tuple[int, bytes]:
-    if int(request.decode()) == 0:
-        return 0, bytes(player_names[0], "utf-8")
-    elif int(request.decode()) == 1:
-        return 0, bytes(player_names[2], "utf-8")
-    elif int(request.decode()) == 2:
-        return 0, bytes(player_names[4], "utf-8")
-    
+    game_id = int(request.decode())
+    return 0, bytes(player_names[game_id * 2], "utf-8")
+
 def right_name_callback(method_information : ecal_core.ServiceMethodInformation, request : bytes) -> Tuple[int, bytes]:
-    if int(request.decode()) == 0:
-        return 0, bytes(player_names[1], "utf-8")
-    elif int(request.decode()) == 1:
-        return 0, bytes(player_names[3], "utf-8")
-    elif int(request.decode()) == 2:
-        return 0, bytes(player_names[5], "utf-8")
+    game_id = int(request.decode())
+    return 0, bytes(player_names[game_id * 2 + 1], "utf-8")
 
 def player_assignment_callback(method_information : ecal_core.ServiceMethodInformation, request : bytes) -> Tuple[int, bytes]:
     if clients_ready % 2 == 0:
@@ -99,29 +95,21 @@ if __name__ == "__main__":
     server.set_method_callback(paddle_left_method_info, paddle_input_left_callback)
     server.set_method_callback(paddle_right_method_info, paddle_input_right_callback)
 
-    game0 = Game(0)
-    game1 = Game(1)
-    game2 = Game(2)
-
-    games.append(game0)
-    games.append(game1)
-    games.append(game2)
-
-    while clients_ready < 6:
-        for game in games:
-            game.idle()
-
-        print(f"Warte auf Spieler. Ready: {clients_ready}")
-        time.sleep(2)
-
-    for i, game in enumerate(games):
-        game.set_player_name(player_names[i * 2])
-        game.set_player_name(player_names[i * 2 + 1])
-
-    for game in games:
-        game.print()
-
+    # main loop
     while ecal_core.ok():
+        ready_for_naming = False
+
+        while clients_ready % 2 != 0 or clients_ready == 0:
+            print("Spieler verbindet...")
+            ready_for_naming = True
+            time.sleep(1.5)
+
+        if ready_for_naming:
+            for i, game in enumerate(games):
+                game.set_player_name(player_names[i * 2])
+                game.set_player_name(player_names[i * 2 + 1])
+
+        interval = 0.008 / len(games)
         for game in games:
             game.play()
-            time.sleep(0.004)
+            time.sleep(interval)
