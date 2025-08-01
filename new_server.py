@@ -1,7 +1,5 @@
 import time
-import sys
-import random
-import pygame
+import threading
 from typing import Tuple
 from class_game import Game
 
@@ -21,6 +19,11 @@ HEIGHT = 800
 paddle_width = 10
 paddle_height = 100
 
+def run_game(game : Game):
+    while ecal_core.ok():
+        game.play()
+        time.sleep(0.01)
+
 # callbacks
 def subscriber_event_callback(subscriber_id : ecal_core.TopicId, callback_data : ecal_core.PubEventCallbackData):
     print("Event callback invoked")
@@ -38,10 +41,16 @@ def connection_request_callback(method_information: ecal_core.ServiceMethodInfor
     game_id = (clients_ready - 1) // 2
 
     # create game on demand
-    if len(games) <= game_id:
+    if clients_ready % 2 == 0:
         new_game = Game(game_id)
+        new_game.set_player_name(player_names[game_id * 2])
+        new_game.set_player_name(player_names[game_id * 2 + 1])
         games.append(new_game)
-        print(f"Neues Spiel mit ID {game_id} erzeugt.")
+
+        # start new thread
+        game_thread = threading.Thread(target=run_game, args=(new_game,), daemon=True)
+        game_thread.start()
+
 
     print(f"{player_name} wurde Spiel {game_id} zugewiesen.")
     return 0, bytes(str(game_id), "utf-8")
@@ -95,21 +104,12 @@ if __name__ == "__main__":
     server.set_method_callback(paddle_left_method_info, paddle_input_left_callback)
     server.set_method_callback(paddle_right_method_info, paddle_input_right_callback)
 
+    # waiting for at least 2 players
+    while clients_ready < 2:
+        print("Warte auf mindestens 2 Spieler...")
+        time.sleep(3)
+
     # main loop
     while ecal_core.ok():
-        ready_for_naming = False
-
-        while clients_ready % 2 != 0 or clients_ready == 0:
-            print("Spieler verbindet...")
-            ready_for_naming = True
-            time.sleep(1.5)
-
-        if ready_for_naming:
-            for i, game in enumerate(games):
-                game.set_player_name(player_names[i * 2])
-                game.set_player_name(player_names[i * 2 + 1])
-
-        interval = 0.008 / len(games)
-        for game in games:
-            game.play()
-            time.sleep(interval)
+        print("Spiele im Gange...")
+        time.sleep(15)

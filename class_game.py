@@ -59,6 +59,19 @@ class Game:
     def set_paddle_right(self, paddle_y):
         self.right_paddle.y = paddle_y
 
+    def update(self):
+        protobuf_message = pong_game_data_pb2.PongGameData()
+        protobuf_message.ball.position_x = self.ball.x
+        protobuf_message.ball.position_y = self.ball.y
+        protobuf_message.paddle_left.position = self.left_paddle.y
+        protobuf_message.paddle_right.position = self.right_paddle.y
+        protobuf_message.score.left = self.left_score
+        protobuf_message.score.right = self.right_score
+        protobuf_message.game_state.state = "playing"
+
+        serialized = protobuf_message.SerializeToString()
+        self.pub.send(serialized)
+
     def play(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -82,17 +95,7 @@ class Game:
         if self.ball.colliderect(self.left_paddle) or self.ball.colliderect(self.right_paddle):
             self.ball_speed[0] = -self.ball_speed[0]
 
-        protobuf_message = pong_game_data_pb2.PongGameData()
-        protobuf_message.ball.position_x = self.ball.x
-        protobuf_message.ball.position_y = self.ball.y
-        protobuf_message.paddle_left.position = self.left_paddle.y
-        protobuf_message.paddle_right.position = self.right_paddle.y
-        protobuf_message.score.left = self.left_score
-        protobuf_message.score.right = self.right_score
-        protobuf_message.game_state.state = "playing"
-
-        serialized = protobuf_message.SerializeToString()
-        self.pub.send(serialized)
+        self.update()
 
     def idle(self):
         protobuf_message = pong_game_data_pb2.PongGameData()
