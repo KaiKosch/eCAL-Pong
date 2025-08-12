@@ -61,8 +61,8 @@ class Game:
 
     def update(self):
         protobuf_message = pong_game_data_pb2.PongGameData()
-        protobuf_message.ball.position_x = self.ball.x
-        protobuf_message.ball.position_y = self.ball.y
+        protobuf_message.ball.position_x = max(0, self.ball.x)
+        protobuf_message.ball.position_y = max(0, self.ball.y)
         protobuf_message.paddle_left.position = self.left_paddle.y
         protobuf_message.paddle_right.position = self.right_paddle.y
         protobuf_message.score.left = self.left_score
@@ -71,7 +71,7 @@ class Game:
 
         serialized = protobuf_message.SerializeToString()
         self.pub.send(serialized)
-
+    
     def play(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -92,20 +92,33 @@ class Game:
             self.ball = pygame.Rect(self.WIDTH // 2 - 15, self.HEIGHT // 2 - 15, 15, 15)
             self.ball_speed = self.ball_speeds[random.randint(0, 1)]
 
-        if self.ball.colliderect(self.left_paddle) or self.ball.colliderect(self.right_paddle):
-            self.ball_speed[0] = -self.ball_speed[0]
+        # if self.ball.colliderect(self.left_paddle) or self.ball.colliderect(self.right_paddle):
+        #    self.ball_speed[0] = -self.ball_speed[0]
+
+        self.handle_paddle_collision()
 
         self.update()
 
     def idle(self):
-        protobuf_message = pong_game_data_pb2.PongGameData()
-        protobuf_message.game_state.state = "waiting"
+        self.update()
+        time.sleep(4)
 
-        serialized = protobuf_message.SerializeToString()
-        self.pub.send(serialized)
+    def handle_paddle_collision(self):
+        def calculate_offset(paddle, ball):
+            # offset between -1 (top) and 1 (bottom)
+            return (ball.centery - paddle.centery) / (self.paddle_height / 2)
 
-        print("Warte auf Spieler...")
-        time.sleep(2.0)
+        if self.ball.colliderect(self.left_paddle):
+            offset = calculate_offset(self.left_paddle, self.ball)
+            self.ball_speed[0] = abs(self.ball_speed[0])  # to the right
+            self.ball_speed[1] = int(offset * 5)
+            self.ball_speed[1] = max(min(self.ball_speed[1], 5), -5)
+
+        elif self.ball.colliderect(self.right_paddle):
+            offset = calculate_offset(self.right_paddle, self.ball)
+            self.ball_speed[0] = -abs(self.ball_speed[0])  # to the left
+            self.ball_speed[1] = int(offset * 5)
+            self.ball_speed[1] = max(min(self.ball_speed[1], 5), -5)
 
     def print(self):
         print(f"Game Id: {self.game_id}")

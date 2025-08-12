@@ -19,7 +19,10 @@ HEIGHT = 800
 paddle_width = 10
 paddle_height = 100
 
+# loop for threads
 def run_game(game : Game):
+    game.idle()
+
     while ecal_core.ok():
         game.play()
         time.sleep(0.01)
