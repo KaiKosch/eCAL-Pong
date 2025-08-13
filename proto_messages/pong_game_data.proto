@@ -25,11 +25,20 @@ message Score
   uint32 right = 2;
 }
 
-message PongGameData
-{
+message PowerUp {
+  bool active = 1;
+  int32 x = 2;
+  int32 y = 3;
+  string target = 4; // "left" oder "right"
+}
+
+message PongGameData {
   Ball ball = 1;
-  GameState game_state = 2;
-  Paddle paddle_left = 3;
-  Paddle paddle_right = 4;
-  Score score = 5;
+  Paddle paddle_left = 2;
+  Paddle paddle_right = 3;
+  Score score = 4;
+  GameState game_state = 5;
+
+  PowerUp power_up_left = 6;
+  PowerUp power_up_right = 7;
 }
