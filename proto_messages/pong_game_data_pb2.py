@@ -18,7 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='proto_messages',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\x14pong_game_data.proto\x12\x0eproto_messages\".\n\x04\x42\x61ll\x12\x12\n\nposition_x\x18\x01 \x01(\r\x12\x12\n\nposition_y\x18\x02 \x01(\r\"1\n\tGameState\x12\r\n\x05state\x18\x01 \x01(\t\x12\x15\n\rclients_ready\x18\x02 \x01(\r\"\x1a\n\x06Paddle\x12\x10\n\x08position\x18\x01 \x01(\r\"$\n\x05Score\x12\x0c\n\x04left\x18\x01 \x01(\r\x12\r\n\x05right\x18\x02 \x01(\r\"\xe2\x01\n\x0cPongGameData\x12\"\n\x04\x62\x61ll\x18\x01 \x01(\x0b\x32\x14.proto_messages.Ball\x12-\n\ngame_state\x18\x02 \x01(\x0b\x32\x19.proto_messages.GameState\x12+\n\x0bpaddle_left\x18\x03 \x01(\x0b\x32\x16.proto_messages.Paddle\x12,\n\x0cpaddle_right\x18\x04 \x01(\x0b\x32\x16.proto_messages.Paddle\x12$\n\x05score\x18\x05 \x01(\x0b\x32\x15.proto_messages.Scoreb\x06proto3'
+  serialized_pb=b'\n\x14pong_game_data.proto\x12\x0eproto_messages\".\n\x04\x42\x61ll\x12\x12\n\nposition_x\x18\x01 \x01(\r\x12\x12\n\nposition_y\x18\x02 \x01(\r\"1\n\tGameState\x12\r\n\x05state\x18\x01 \x01(\t\x12\x15\n\rclients_ready\x18\x02 \x01(\r\"\x1a\n\x06Paddle\x12\x10\n\x08position\x18\x01 \x01(\r\"$\n\x05Score\x12\x0c\n\x04left\x18\x01 \x01(\r\x12\r\n\x05right\x18\x02 \x01(\r\"?\n\x07PowerUp\x12\x0e\n\x06\x61\x63tive\x18\x01 \x01(\x08\x12\t\n\x01x\x18\x02 \x01(\x05\x12\t\n\x01y\x18\x03 \x01(\x05\x12\x0e\n\x06target\x18\x04 \x01(\t\"\xc3\x02\n\x0cPongGameData\x12\"\n\x04\x62\x61ll\x18\x01 \x01(\x0b\x32\x14.proto_messages.Ball\x12+\n\x0bpaddle_left\x18\x02 \x01(\x0b\x32\x16.proto_messages.Paddle\x12,\n\x0cpaddle_right\x18\x03 \x01(\x0b\x32\x16.proto_messages.Paddle\x12$\n\x05score\x18\x04 \x01(\x0b\x32\x15.proto_messages.Score\x12-\n\ngame_state\x18\x05 \x01(\x0b\x32\x19.proto_messages.GameState\x12.\n\rpower_up_left\x18\x06 \x01(\x0b\x32\x17.proto_messages.PowerUp\x12/\n\x0epower_up_right\x18\x07 \x01(\x0b\x32\x17.proto_messages.PowerUpb\x06proto3'
 )
 
 
@@ -169,6 +169,58 @@ _SCORE = _descriptor.Descriptor(
 )
 
 
+_POWERUP = _descriptor.Descriptor(
+  name='PowerUp',
+  full_name='proto_messages.PowerUp',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='active', full_name='proto_messages.PowerUp.active', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='x', full_name='proto_messages.PowerUp.x', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='y', full_name='proto_messages.PowerUp.y', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='target', full_name='proto_messages.PowerUp.target', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=205,
+  serialized_end=268,
+)
+
+
 _PONGGAMEDATA = _descriptor.Descriptor(
   name='PongGameData',
   full_name='proto_messages.PongGameData',
@@ -184,29 +236,43 @@ _PONGGAMEDATA = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='game_state', full_name='proto_messages.PongGameData.game_state', index=1,
+      name='paddle_left', full_name='proto_messages.PongGameData.paddle_left', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='paddle_left', full_name='proto_messages.PongGameData.paddle_left', index=2,
+      name='paddle_right', full_name='proto_messages.PongGameData.paddle_right', index=2,
       number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='paddle_right', full_name='proto_messages.PongGameData.paddle_right', index=3,
+      name='score', full_name='proto_messages.PongGameData.score', index=3,
       number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='score', full_name='proto_messages.PongGameData.score', index=4,
+      name='game_state', full_name='proto_messages.PongGameData.game_state', index=4,
       number=5, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='power_up_left', full_name='proto_messages.PongGameData.power_up_left', index=5,
+      number=6, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='power_up_right', full_name='proto_messages.PongGameData.power_up_right', index=6,
+      number=7, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -223,19 +289,22 @@ _PONGGAMEDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=206,
-  serialized_end=432,
+  serialized_start=271,
+  serialized_end=594,
 )
 
 _PONGGAMEDATA.fields_by_name['ball'].message_type = _BALL
-_PONGGAMEDATA.fields_by_name['game_state'].message_type = _GAMESTATE
 _PONGGAMEDATA.fields_by_name['paddle_left'].message_type = _PADDLE
 _PONGGAMEDATA.fields_by_name['paddle_right'].message_type = _PADDLE
 _PONGGAMEDATA.fields_by_name['score'].message_type = _SCORE
+_PONGGAMEDATA.fields_by_name['game_state'].message_type = _GAMESTATE
+_PONGGAMEDATA.fields_by_name['power_up_left'].message_type = _POWERUP
+_PONGGAMEDATA.fields_by_name['power_up_right'].message_type = _POWERUP
 DESCRIPTOR.message_types_by_name['Ball'] = _BALL
 DESCRIPTOR.message_types_by_name['GameState'] = _GAMESTATE
 DESCRIPTOR.message_types_by_name['Paddle'] = _PADDLE
 DESCRIPTOR.message_types_by_name['Score'] = _SCORE
+DESCRIPTOR.message_types_by_name['PowerUp'] = _POWERUP
 DESCRIPTOR.message_types_by_name['PongGameData'] = _PONGGAMEDATA
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -266,6 +335,13 @@ Score = _reflection.GeneratedProtocolMessageType('Score', (_message.Message,), {
   # @@protoc_insertion_point(class_scope:proto_messages.Score)
   })
 _sym_db.RegisterMessage(Score)
+
+PowerUp = _reflection.GeneratedProtocolMessageType('PowerUp', (_message.Message,), {
+  'DESCRIPTOR' : _POWERUP,
+  '__module__' : 'pong_game_data_pb2'
+  # @@protoc_insertion_point(class_scope:proto_messages.PowerUp)
+  })
+_sym_db.RegisterMessage(PowerUp)
 
 PongGameData = _reflection.GeneratedProtocolMessageType('PongGameData', (_message.Message,), {
   'DESCRIPTOR' : _PONGGAMEDATA,
